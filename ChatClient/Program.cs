@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using ChatProtocol;
 
 namespace ChatClient
 {
@@ -29,13 +30,14 @@ namespace ChatClient
             Console.WriteLine(welcomeText);
             while (true)
             {
-
                 Console.Write("Enter your message: ");
                 var msg = Console.ReadLine();
 
                 if (string.IsNullOrEmpty(msg))
                 {
-                    await closeConnection(clientSoceket);
+                    await closeConnectionAsync(clientSoceket);
+                    //var bytes = Encoding.UTF8.GetBytes(Constants.CommandShutdown);
+                    //await clientSoceket.SendAsync(bytes);
                     return;
                 }
                 else
@@ -46,9 +48,11 @@ namespace ChatClient
             }
         }
 
-        private static async Task closeConnection(Socket clientSoceket)
+        private static async Task closeConnectionAsync(Socket clientSoceket)
         {
-            clientSoceket?.Close();
+            var bytes = Encoding.UTF8.GetBytes(Constants.CommandShutdown);
+            await clientSoceket.SendAsync(bytes);
+            clientSoceket.Close();
         }
 
         private static void showConnectionError()
