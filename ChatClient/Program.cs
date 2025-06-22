@@ -18,19 +18,19 @@ namespace ChatClient
             await clientSoceket.ConnectAsync(endPoint);
             var buffer = new byte[1024];
 
+            var r = await clientSoceket.ReceiveAsync(buffer);
+            if (r == 0)
+            {
+                showConnectionError();
+                return;
+            }
+            var welcomeText = Encoding.UTF8.GetString(buffer, 0, r);
+
+            Console.WriteLine(welcomeText);
             while (true)
             {
-                var r = await clientSoceket.ReceiveAsync(buffer);
-                if (r == 0)
-                {
-                    showConnectionError();
-                    return;
-                }
-                var welcomeText = Encoding.UTF8.GetString(buffer, 0, r);
 
-                Console.WriteLine(welcomeText);
-
-                Console.WriteLine("Enter your message: ");
+                Console.Write("Enter your message: ");
                 var msg = Console.ReadLine();
 
                 if (string.IsNullOrEmpty(msg))

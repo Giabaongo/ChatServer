@@ -26,6 +26,7 @@ namespace ChatServer
             while (true)
             {
                 var clientSocket = await serverSocket.AcceptAsync();
+                Console.WriteLine($"[Client {clientId}] Connected");
                 await handleClientRequestAsync(clientSocket, clientId);
             }
         }
@@ -35,11 +36,15 @@ namespace ChatServer
             var welcomeBytes = Encoding.UTF8.GetBytes(Constants.WelComeText);
             await clientSocket.SendAsync(welcomeBytes);
 
-            var buffer = new byte[1024];
-            var r = await clientSocket.ReceiveAsync(buffer);
-            var msg = Encoding.UTF8.GetString(buffer, 0, r);
+            while (true)
+            {
 
-            Console.WriteLine($"[CLient {clientId}]: {msg}");
+                var buffer = new byte[1024];
+                var r = await clientSocket.ReceiveAsync(buffer);
+                var msg = Encoding.UTF8.GetString(buffer, 0, r);
+
+                Console.WriteLine($"[CLient {clientId}]: {msg}");
+            }
         }
     }
 }
